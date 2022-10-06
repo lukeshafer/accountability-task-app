@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import MainLayout from "$components/layouts/MainLayout";
 import AddTaskButton from "$modules/todo/components/AddTaskButton";
 import { trpc } from "$utils/trpc";
+import Task from "$modules/todo/components/Task";
 
 const Home = () => {
   const { data: session, status } = useSession();
@@ -19,15 +20,8 @@ const Home = () => {
         {/* LIST */}
         <ul className="flex w-40 flex-col gap-4">
           {tasks.map((value, index) => (
-            <li key={index} className="">
-              <button className="btn btn-outline btn-block h-20">
-                {value}
-              </button>
-            </li>
+            <Task key={index} value={value} />
           ))}
-          <li className="bg-base-100/25 shadow-xl">
-            <AddTaskButton></AddTaskButton>
-          </li>
         </ul>
       </MainLayout>
     );
