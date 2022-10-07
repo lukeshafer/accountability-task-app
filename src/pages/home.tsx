@@ -1,6 +1,6 @@
 // The Home page is your default place in the app, where you see your task list
 import { useSession } from "next-auth/react";
-import MainLayout from "$components/layouts/MainLayout";
+import BaseLayout from "$components/layouts/BaseLayout";
 import AddTaskButton from "$modules/todo/components/AddTaskButton";
 import { trpc } from "$utils/trpc";
 import Task from "$modules/todo/components/Task";
@@ -12,7 +12,7 @@ const Home = () => {
 
   if (session) {
     return (
-      <MainLayout title={`${session?.user?.name} - Home`}>
+      <BaseLayout title={`${session?.user?.name} - Home`}>
         <ul className="grid w-72 content-start justify-center justify-items-center gap-4">
           {data?.map(({ id, title, description, completed }) => (
             <Task
@@ -26,9 +26,9 @@ const Home = () => {
           ))}
           <AddTaskButton refetch={refetch} />
         </ul>
-      </MainLayout>
+      </BaseLayout>
     );
-  } else return <MainLayout title="Loading..."></MainLayout>;
+  } else return <BaseLayout title="Loading..."></BaseLayout>;
 };
 
 export default Home;

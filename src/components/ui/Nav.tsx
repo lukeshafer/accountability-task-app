@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const Nav = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   return (
     <nav className="navbar bg-base-100">
@@ -13,25 +13,33 @@ const Nav = () => {
         </Link>
       </div>
       <div className="flex-none gap-2">
-        <div className="dropdown-end dropdown">
-          <label tabIndex={0} className="avatar btn btn-ghost btn-circle">
-            <div className="w-10 rounded-full">
-              {/* TODO: replace with <Image /> tag */}
-              <img src={session?.user?.image ?? ""} alt="Profile Picture" />
-            </div>
-          </label>
-          <ul
-            tabIndex={0}
-            className="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-base-100 p-2 shadow"
-          >
-            <li>
-              <a>Settings</a>
-            </li>
-            <li>
-              <Link href="/api/auth/signout">Logout</Link>
-            </li>
-          </ul>
-        </div>
+        {!session && status !== "loading" && (
+          <Link href="/login">
+            <a className="btn btn-primary">Sign In</a>
+          </Link>
+        )}
+        {session && (
+          <div className="dropdown-end dropdown">
+            <label tabIndex={0} className="avatar btn btn-ghost btn-circle">
+              <div className="w-10 rounded-full">
+                {/* TODO: replace with <Image /> tag */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={session?.user?.image ?? ""} alt="Profile Picture" />
+              </div>
+            </label>
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-base-100 p-2 shadow"
+            >
+              <li>
+                <a>Settings</a>
+              </li>
+              <li>
+                <Link href="/api/auth/signout">Logout</Link>
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
     </nav>
   );

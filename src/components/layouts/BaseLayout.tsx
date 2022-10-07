@@ -1,5 +1,7 @@
+import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { PropsWithChildren } from "react";
+import Nav from "$components/ui/Nav";
+import { PropsWithChildren, useEffect } from "react";
 
 export default function Layout({
   children,
@@ -15,7 +17,10 @@ export default function Layout({
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {children}
+      <Nav />
+      <main className="grid min-h-screen w-screen place-content-center bg-base-200">
+        {children}
+      </main>
     </>
   );
 }
