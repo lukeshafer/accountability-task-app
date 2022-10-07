@@ -1,12 +1,15 @@
 import { PropsWithChildren } from "react";
 import BaseLayout from "./BaseLayout";
+import Nav from "$components/ui/Nav";
 
-const MainLayout = ({
-  children,
-  title,
-}: PropsWithChildren & { title: string }) => {
+type Props = {
+  title: string;
+} & PropsWithChildren;
+
+const MainLayout = ({ children, title }: Props) => {
   return (
     <BaseLayout title={title}>
+      <Nav />
       <main className="grid min-h-screen w-screen place-content-center bg-base-200">
         {children}
       </main>

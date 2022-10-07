@@ -2,6 +2,15 @@ import { createProtectedRouter } from "./context";
 import { z } from "zod";
 
 export const taskRouter = createProtectedRouter()
+  .query("getAll", {
+    async resolve({ ctx }) {
+      return await ctx.prisma.task.findMany({
+        where: {
+          userId: ctx.session.user.id,
+        },
+      });
+    },
+  })
   .mutation("createTask", {
     input: z.object({
       title: z.string(),
@@ -21,12 +30,37 @@ export const taskRouter = createProtectedRouter()
       };
     },
   })
-  .query("getAll", {
-    async resolve({ ctx }) {
-      return await ctx.prisma.task.findMany({
+  .mutation("deleteTask", {
+    input: z.object({
+      id: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      const result = await ctx.prisma.task.delete({
         where: {
-          userId: ctx.session.user.id,
+          id: input.id,
         },
       });
+      return {
+        id: result.id,
+      };
+    },
+  })
+  .mutation("completeTask", {
+    input: z.object({
+      id: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      const result = await ctx.prisma.task.update({
+        data: {
+          completed: true,
+          completedAt: new Date(),
+        },
+        where: {
+          id: input.id,
+        },
+      });
+      return {
+        id: result.id,
+      };
     },
   });

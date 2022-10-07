@@ -1,7 +1,7 @@
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { trpc } from "$utils/trpc";
 
-const AddTaskButton = () => {
+const AddTaskButton = ({ refetch }: { refetch: () => void }) => {
   const input: MutableRefObject<null | HTMLInputElement> = useRef(null);
   const [isAdding, setIsAdding] = useState(false);
   const addTaskMutation = trpc.useMutation("task.createTask");
@@ -11,8 +11,14 @@ const AddTaskButton = () => {
   }, [isAdding]);
 
   const addTask = (task: string) => {
-    console.log(task);
-    // addTaskMutation.mutate({ title: task, description: task });
+    addTaskMutation.mutate(
+      { title: task, description: task },
+      {
+        onSuccess() {
+          refetch();
+        },
+      }
+    );
   };
 
   const handleBlur = () => {
@@ -28,7 +34,7 @@ const AddTaskButton = () => {
       {!isAdding && (
         <button
           onClick={() => setIsAdding(true)}
-          className="btn btn-outline btn-block h-20 border-4 border-dashed border-base-content/50"
+          className="btn btn-outline h-20 w-48 border-4 border-dashed border-base-content/50"
         >
           Add Task
         </button>

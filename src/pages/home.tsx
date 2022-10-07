@@ -8,20 +8,23 @@ import Task from "$modules/todo/components/Task";
 const Home = () => {
   const { data: session, status } = useSession();
 
-  const tasks = ["First task", "second task", "Another Task!"];
-  const tasksData = trpc.useQuery(["task.getAll"]);
+  const { data, isLoading, refetch } = trpc.useQuery(["task.getAll"]);
 
   if (session) {
     return (
       <MainLayout title={`${session?.user?.name} - Home`}>
-        {tasksData.data?.map((value) => (
-          <p key={value.id}>{value.title}</p>
-        ))}
-        {/* LIST */}
-        <ul className="flex w-40 flex-col gap-4">
-          {tasks.map((value, index) => (
-            <Task key={index} value={value} />
+        <ul className="grid w-72 content-start justify-center justify-items-center gap-4">
+          {data?.map(({ id, title, description, completed }) => (
+            <Task
+              key={id}
+              id={id}
+              title={title}
+              description={description}
+              refetch={refetch}
+              completed={completed}
+            />
           ))}
+          <AddTaskButton refetch={refetch} />
         </ul>
       </MainLayout>
     );
