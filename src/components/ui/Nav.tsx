@@ -1,5 +1,4 @@
-import { useSession } from "next-auth/react";
-import Image from "next/image";
+import { useSession, signIn } from "next-auth/react";
 import Link from "next/link";
 
 const Nav = () => {
@@ -8,18 +7,18 @@ const Nav = () => {
   return (
     <nav className="navbar bg-base-100">
       <div className="flex-1">
-        <Link href="/home">
+        <Link href="/">
           <a className="btn btn-ghost text-xl normal-case">Task App</a>
         </Link>
       </div>
       <div className="flex-none gap-2">
         {!session && status !== "loading" && (
-          <Link href="/login">
-            <a className="btn btn-primary">Sign In</a>
-          </Link>
+          <button onClick={() => signIn("discord")} className="btn btn-primary">
+            Sign In
+          </button>
         )}
         {session && (
-          <div className="dropdown-end dropdown">
+          <div className="dropdown dropdown-end">
             <label tabIndex={0} className="avatar btn btn-ghost btn-circle">
               <div className="w-10 rounded-full">
                 {/* TODO: replace with <Image /> tag */}

@@ -18,16 +18,13 @@ export const taskRouter = createProtectedRouter()
     }),
 
     async resolve({ ctx, input }) {
-      const result = await ctx.prisma.task.create({
+      return await ctx.prisma.task.create({
         data: {
           userId: ctx.session.user.id,
           title: input.title,
           description: input.description,
         },
       });
-      return {
-        id: result.id,
-      };
     },
   })
   .mutation("deleteTask", {
@@ -45,14 +42,15 @@ export const taskRouter = createProtectedRouter()
       };
     },
   })
-  .mutation("completeTask", {
+  .mutation("toggleTask", {
     input: z.object({
       id: z.string(),
+      isCompleted: z.boolean(),
     }),
     async resolve({ ctx, input }) {
       const result = await ctx.prisma.task.update({
         data: {
-          completed: true,
+          completed: input.isCompleted,
           completedAt: new Date(),
         },
         where: {

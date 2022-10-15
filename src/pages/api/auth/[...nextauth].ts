@@ -9,6 +9,19 @@ import { env } from "$env/server.mjs";
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
   callbacks: {
+    async signIn({ user }) {
+      try {
+        // THROWS IF USER DOES NOT ALREADY EXIST IN DB
+        // THIS CODE SHOULD ONLY BE USED BEFORE PRODUCTION
+        const userQuery = await prisma.user.findFirstOrThrow({
+          where: { email: user?.email },
+        });
+        if (userQuery) return true;
+        return false;
+      } catch {
+        return false;
+      }
+    },
     session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;

@@ -1,6 +1,7 @@
 // src/pages/_app.tsx
 import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
 import { loggerLink } from "@trpc/client/links/loggerLink";
+import { devtoolsLink } from "trpc-client-devtools-link";
 import { withTRPC } from "@trpc/next";
 import { SessionProvider } from "next-auth/react";
 import superjson from "superjson";
@@ -41,6 +42,11 @@ export default withTRPC<AppRouter>({
             process.env.NODE_ENV === "development" ||
             (opts.direction === "down" && opts.result instanceof Error),
         }),
+        devtoolsLink({
+          // `enabled` is true by default
+          // If you want to use the devtools extension just for development, do the following
+          enabled: process.env.NODE_ENV === "development",
+        }),
         httpBatchLink({ url }),
       ],
       url,
@@ -51,21 +57,21 @@ export default withTRPC<AppRouter>({
       // queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
 
       // To use SSR properly you need to forward the client's headers to the server
-      // headers: () => {
-      //   if (ctx?.req) {
-      //     const headers = ctx?.req?.headers;
-      //     delete headers?.connection;
-      //     return {
-      //       ...headers,
-      //       "x-ssr": "1",
-      //     };
-      //   }
-      //   return {};
-      // }
+      headers: () => {
+        if (ctx?.req) {
+          const headers = ctx?.req?.headers;
+          delete headers?.connection;
+          return {
+            ...headers,
+            "x-ssr": "1",
+          };
+        }
+        return {};
+      },
     };
   },
   /**
    * @link https://trpc.io/docs/ssr
    */
-  ssr: false,
+  ssr: true,
 })(MyApp);

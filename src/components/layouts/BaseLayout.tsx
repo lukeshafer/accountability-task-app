@@ -1,12 +1,12 @@
-import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Nav from "$components/ui/Nav";
-import { PropsWithChildren, useEffect } from "react";
+import { PropsWithChildren } from "react";
 
-export default function Layout({
-  children,
-  title,
-}: PropsWithChildren & { title: string }) {
+type Props = {
+  title: string;
+} & PropsWithChildren;
+
+export default function Layout({ children, title }: Props) {
   return (
     <>
       <Head>
@@ -18,9 +18,8 @@ export default function Layout({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Nav />
-      <main className="grid min-h-screen w-screen place-content-center bg-base-200">
-        {children}
-      </main>
+
+      {children}
     </>
   );
 }

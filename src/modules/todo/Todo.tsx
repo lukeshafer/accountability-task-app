@@ -1,40 +1,38 @@
-import { FormEventHandler, useState } from "react";
+import AddTaskButton from "$modules/todo/components/AddTaskButton";
+import Task from "$modules/todo/components/Task";
+import autoAnimate from "@formkit/auto-animate";
+import { useEffect, useRef } from "react";
+import { inferQueryOutput } from "$utils/trpc";
+import { UseQueryResult } from "react-query";
 
-const Todo = () => {
-  const [todoList, setTodoList] = useState<string[]>([]);
+interface Props {
+  tasks: UseQueryResult<inferQueryOutput<"task.getAll">>;
+}
 
-  const addTodoItem: FormEventHandler<HTMLFormElement> = (evt) => {
-    evt.preventDefault();
-    const todoValue = evt.currentTarget.task.value;
-    setTodoList((value) => [...value, todoValue]);
-    evt.currentTarget.task.value = "";
-  };
+const Todo = ({ tasks }: Props) => {
+  const parent = useRef(null);
+
+  useEffect(() => {
+    parent.current && autoAnimate(parent.current);
+  }, [parent]);
 
   return (
-    <>
-      <ul>
-        {todoList.map((item, index) => (
-          <li key={index} className="border border-cyan-300 p-2 text-center">
-            {item}
-          </li>
-        ))}
-      </ul>
-      <form onSubmit={addTodoItem} className="flex justify-center gap-2">
-        <input
-          type="text"
-          name="task"
-          id="task"
-          required
-          className="border-2 border-sky-500 p-2 text-center"
+    <ul
+      ref={parent}
+      className="grid w-full content-start justify-center justify-items-center gap-4"
+    >
+      {tasks.data?.map(({ id, title, description, completed }) => (
+        <Task
+          key={id}
+          id={id}
+          title={title}
+          description={description}
+          refetch={tasks.refetch}
+          completed={completed}
         />
-        <button
-          type="submit"
-          className="border-2 border-sky-500 p-2 text-center"
-        >
-          Add Item
-        </button>
-      </form>
-    </>
+      ))}
+      <AddTaskButton tasks={tasks} />
+    </ul>
   );
 };
 

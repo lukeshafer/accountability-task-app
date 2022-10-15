@@ -15,7 +15,7 @@ const Task = ({ id, title, description, completed, refetch }: Props) => {
     setIsExpanded(!isExpanded);
   };
   const deleteTask = trpc.useMutation("task.deleteTask");
-  const completeTask = trpc.useMutation("task.completeTask");
+  const completeTask = trpc.useMutation("task.toggleTask");
 
   return (
     <li className="flex w-[inherit] justify-center">
@@ -28,7 +28,11 @@ const Task = ({ id, title, description, completed, refetch }: Props) => {
         onClick={handleClick}
       >
         <div className="flex items-center justify-between gap-4">
-          <h2 className={`text-lg ${completed ? "line-through" : ""}`}>
+          <h2
+            className={`text-base font-semibold ${
+              completed ? "line-through" : ""
+            }`}
+          >
             {title}
           </h2>
           {isExpanded && (
@@ -46,10 +50,13 @@ const Task = ({ id, title, description, completed, refetch }: Props) => {
               <button
                 className="btn btn-primary btn-sm"
                 onClick={() =>
-                  completeTask.mutate({ id }, { onSuccess: refetch })
+                  completeTask.mutate(
+                    { id, isCompleted: !completed },
+                    { onSuccess: refetch }
+                  )
                 }
               >
-                ✓
+                {completed ? "o" : "✓"}
               </button>
             </div>
           )}
